@@ -1,9 +1,6 @@
 import sqlite3
 conn = sqlite3.connect("PingPong.sqlite")
 cursor = conn.cursor()
-sql_query = "'" CREATE TABLE users (
-    username integer
-)
 from flask import Flask, request, jsonify, session
 
 from DBmanager import DB_FILE, app
