@@ -2,20 +2,27 @@ import os
 import sqlite3
 import subprocess
 
-conn = sqlite3.connect("database.sqlite")
-cursor = conn.cursor()
+import DBmanager
+
+from DBmanager import DB_FILE, app
+
 from flask import Flask, request, jsonify, session
 
-from DBmanager import DB_FILE, app, init_db
+app = Flask(__name__)
+
+# ESTABLISH CONNECTION WITH A DATABASE
+conn = sqlite3.connect(DB_FILE)
+cursor = conn.cursor()
 
 
 @app.route('/register', methods=['POST'])
 def register():
     data = request.json
     username = data.get('username')
+    print(username)
     email = data.get('email')
     password = data.get('password')
-
+    DBmanager.init_db()
     conn = sqlite3.connect(DB_FILE)
     cursor = conn.cursor()
     cursor.execute('''INSERT INTO users (username, email, password)
@@ -50,8 +57,10 @@ def logout():
     session.clear()
     return jsonify({"message": "Logout successful"}), 200
 
+
 def allowed_file(filename, ALLOWED_EXTENSIONS=['mp4']):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 
 @app.route('/upload', methods=['POST'])
 def upload_video():
@@ -83,5 +92,5 @@ def upload_video():
 
 
 if __name__ == "__main__":
-    init_db()
+    DBmanager.init_db()
     app.run()

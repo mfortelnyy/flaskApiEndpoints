@@ -1,9 +1,3 @@
-import sqlite3
-conn = sqlite3.connect("PingPong.sqlite")
-cursor = conn.cursor()
-from flask import Flask, request, jsonify, session
-
-from DBmanager import DB_FILE, app
 
 
 @app.route('/register', methods=['POST'])
@@ -12,9 +6,6 @@ def register():
     username = data.get('username')
     email = data.get('email')
     password = data.get('password')
-
-    conn = sqlite3.connect(DB_FILE)
-    cursor = conn.cursor()
     cursor.execute('''INSERT INTO users (username, email, password)
                       VALUES (?, ?, ?)''', (username, email, password))
     conn.commit()
@@ -63,5 +54,5 @@ def upload_video():
     return jsonify({"message": "Video uploaded successfully"}), 200
 
 if __name__ == "__main__":
-    init_db()
+    DBmanager.init_db()
     app.run()
